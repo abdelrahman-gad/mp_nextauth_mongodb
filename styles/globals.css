@@ -28,6 +28,7 @@ button{
   margin-right:20px !important;
   transition: all ease-in-out 0.3s;
   border-radius: 25px;
+  outline: none;
 }
 button:active{
   outline: none;
