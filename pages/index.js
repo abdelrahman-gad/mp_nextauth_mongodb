@@ -10,35 +10,40 @@ import {useRouter} from 'next/router';
 
 
 
+const load=() => <Loader active inline='centered' />
+
+
+
 const Home= (  )=> {
+ 
 
   const [session , loading] = useSession();
   const [open, setOpen] = useState(true);
   const [form, setForm] = useState({ _id:'', name: '', email: '' , job:'',company:'',linkedin:'',biography:'' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [success,setSuccess] = useState( false );
+  console.log('is submitting',isSubmitting);
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
     useEffect(async ()=>{
-     if(session){
-     
+     if(session){    
        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?email=${session.user.email}`);
-       const {user} = await res.json();
-     
+       const { user } = await res.json(); 
        setForm({...form,...user});
-   
-     }
-     
-       
+     }         
     },[session]);
 
- 
-   
+    useEffect(() => {
+        if (isSubmitting) {          
+          updateProfile(); 
+          setIsSubmitting(false); 
+        }
+    }, [isSubmitting])
+    
  
 
     const updateProfile = async () => {
-  
       try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${form._id}`, {
               method: 'PUT',
@@ -48,6 +53,8 @@ const Home= (  )=> {
               },
               body: JSON.stringify(form)
           })
+          const { success } = await res.json();
+          setSuccess(true);
           router.push("/");
       } catch (error) {
           console.log(error);
@@ -56,10 +63,7 @@ const Home= (  )=> {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     setIsSubmitting(true);
-    updateProfile();
-    setIsSubmitting(false); 
   }
 
   const handleChange = (e) => {
@@ -71,11 +75,8 @@ const Home= (  )=> {
   }
 
 
-
-
-  const profileForm =()=>{
+  const profileForm = () => {
     return (
-
       <Modal
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
@@ -87,10 +88,9 @@ const Home= (  )=> {
             <Image size='medium' src='https://react.semantic-ui.com/images/avatar/large/rachel.png' wrapped />
             <Modal.Description>
               <Header>Default Profile Image</Header>
+              { success?<Header>Profile was updated successfully</Header>: null }
               {
-                      isSubmitting
-                          ? <Loader active inline='centered' />
-                          : <Form onSubmit={handleSubmit} >
+                       <Form onSubmit={handleSubmit} >
                             <div style={{ border:'1px solid #333' , display:'flex'  }}>
                             <div>
                                 <Form.Input
@@ -155,60 +155,49 @@ const Home= (  )=> {
                             </div>
 
                             
-                              <Button type='submit'>Update Profile</Button> 
+                              <Button type='submit' disabled={isSubmitting} style={{background:isSubmitting?'red':'grey' }} >Update Profile</Button> 
                               <Button  onClick={()=>setOpen(false)} > Cancel </Button>
                           </Form>
-
                   }
             </Modal.Description>
           </Modal.Content>
-          <Modal.Actions>
-        
+          <Modal.Actions>    
       </Modal.Actions>
     </Modal>
-
-
-
-          
+       
     );
   }
+  const loggedInView =()=>  (
+                                <>
+                                  
+                                {  profileForm() }
+                                  Signed In as {session.user.email} ,Access private pages
+                                  
+                                  <button onClick={signOut}>Sign Out</button>
+                                </>
+                              ) 
 
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Minority Programmers Association</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className={styles.main}>
-         {
-          !session && (
-            <>
-              Not Signed In 
-              <button onClick={signIn}>Sign In</button>
-            </>
-          ) 
-         }
+  const loggedOutView = ()=> (
+                                <> 
+                                  Not Signed In 
+                                  <button onClick={signIn}>Sign In</button>
+                                </> 
+                              )    
 
-       
-        {
-         
-      
+  const views=() =>  (
+                        <div className={styles.container}>
+                          <Head>
+                            <title>Minority Programmers Association</title>
+                            <link rel="icon" href="/favicon.ico" />
+                          </Head>
+                          <main className={styles.main}>
+                            {session?loggedInView():loggedOutView()}
+                          </main>                  
+                        </div>
+                      ) 
 
-          session && (
-              <>
-                 
-              {  profileForm() }
-                Signed In as {session.user.email} ,Access private pages
-                 
-                <button onClick={signOut}>Sign Out</button>
-              </>
-            ) 
-               
-        }
-      </main>
-      
-    </div>
-  )
+  {  return  loading?load():  views() }
+ 
 }
 
 export default Home;

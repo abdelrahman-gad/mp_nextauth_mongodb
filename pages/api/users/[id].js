@@ -18,7 +18,7 @@ export default async (req, res) => {
                     new: true,
                     // runValidators: true
                     // ,
-                    // useFindAndModify:false
+                     useFindAndModify:false
                 });
 
                 console.log(user); 
