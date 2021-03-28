@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display&display=swap');
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Red Hat Display' , sans-serif !important;
 }
 
 a {
@@ -13,4 +14,69 @@ a {
 
 * {
   box-sizing: border-box;
+}
+button , h2 , h3{
+  font-family: 'Red Hat Display' , sans-serif !important;
+  color: #fff;
+}
+
+button{
+  padding: 16px 20px;
+  font-size: 20px !important;
+  border: none;
+  cursor: pointer;
+  margin-right:20px !important;
+  transition: all ease-in-out 0.3s;
+  border-radius: 25px;
+}
+button:active{
+  outline: none;
+}
+.yellow{
+  background-color: #FFC700;
+  color:#151371;
+}
+.yellow:hover{
+ background-color:#C19200;
+}
+.blue{
+  background-color: #151371;
+  color:#FFC700;
+ 
+}
+.blue:hover{
+  background-color: #000066;
+}
+
+button:hover{
+  background-color: #fff;
+}
+button:active{
+  border: none;
+}
+.success{
+  background-color: #FFC700;
+  padding:8px 12px;
+  color:#fff;
+}
+
+.brand-img{
+  max-width: 300px  !important;
+}
+
+.form{
+  display: flex;
+  justify-content: center;
+  flex-wrap:wrap;
+}
+.form div{
+  width:100%;
+}
+
+.form input{ 
+  width: 100%;
+}
+
+.button-group{
+  margin-top: 15px;
 }

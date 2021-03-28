@@ -2,7 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link';
 import {useState,useEffect} from 'react';
-import {Loader, Form , Button ,Modal ,Header,Image } from 'semantic-ui-react';
+import {Loader, Form  , Modal  , Grid , Image } from 'semantic-ui-react';
 import fetch from 'isomorphic-unfetch';
 import {signIn,signOut, useSession } from 'next-auth/client';
 import {useRouter} from 'next/router';
@@ -10,7 +10,7 @@ import {useRouter} from 'next/router';
 
 
 
-const load=() => <Loader active inline='centered' />
+const load=() => <Loader active  className="load" />
 
 
 
@@ -81,18 +81,21 @@ const Home= (  )=> {
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
           open={open}
-          trigger={<Button>Show Modal</Button>}
+       
+          trigger={<button className="blue" style={{ border:'1px solid #fff' }}>Update Profile</button>}
+        
+          
         >
           <Modal.Header>Update your profile data</Modal.Header>
           <Modal.Content image>
-            <Image size='medium' src='https://react.semantic-ui.com/images/avatar/large/rachel.png' wrapped />
+          <Image src='/mp_gradient_rock.svg'  className="brand-img"  alt="Minority programmers"  />
             <Modal.Description>
-              <Header>Default Profile Image</Header>
-              { success?<Header>Profile was updated successfully</Header>: null }
+             
+              { success?<h3 className="success" >your profile was updated successfully</h3>: null }
               {
-                       <Form onSubmit={handleSubmit} >
-                            <div style={{ border:'1px solid #333' , display:'flex'  }}>
-                            <div>
+                       <Form onSubmit={handleSubmit} className="form" >
+                            <div  >
+                             
                                 <Form.Input
                                     
                                     // error={errors.name ? { content: 'Please enter a valid name ', pointing: 'below' } : null}
@@ -121,8 +124,8 @@ const Home= (  )=> {
                                     
                                     onChange={handleChange}
                                 />
-                            </div>
-                            <div>
+                        
+                           
                             <Form.Input
                                 
                                 //  error={errors.name ? { content: 'Please enter a valid name ', pointing: 'below' } : null}
@@ -151,12 +154,11 @@ const Home= (  )=> {
                                 onChange={handleChange}
                             />
                             </div>
-                            
-                            </div>
 
-                            
-                              <Button type='submit' disabled={isSubmitting} style={{background:isSubmitting?'red':'grey' }} >Update Profile</Button> 
-                              <Button  onClick={()=>setOpen(false)} > Cancel </Button>
+                             <div className="button-group">
+                              <button  type='submit' disabled={isSubmitting} className="blue" >Update Profile</button> 
+                              <button  onClick={()=>setOpen(false)} className="yellow" > Cancel </button>
+                             </div>
                           </Form>
                   }
             </Modal.Description>
@@ -169,18 +171,36 @@ const Home= (  )=> {
   }
   const loggedInView =()=>  (
                                 <>
-                                  
-                                {  profileForm() }
-                                  Signed In as {session.user.email} ,Access private pages
-                                  
-                                  <button onClick={signOut}>Sign Out</button>
+                                
+
+                                <Grid container columns={2} stackable>
+                                    <Grid.Column >
+                                      <Image src='/mp_gradient_rock.svg'  className="brand-img" alt="Minority programmers"  />
+                                    </Grid.Column>
+                                    
+                                    <Grid.Column>
+                                      <h2> Hi {session.user.name} </h2>
+                                      <h2> Welcome to minority programmers association  </h2>  
+                                    
+                                      {  profileForm() }   
+                                      <button className="yellow" onClick={signOut}>Sign Out</button>
+                                    </Grid.Column>
+                                  </Grid>
+
                                 </>
                               ) 
 
   const loggedOutView = ()=> (
                                 <> 
-                                  Not Signed In 
-                                  <button onClick={signIn}>Sign In</button>
+                                 <Grid container columns={2} stackable>
+                                   <Grid.Column >
+                                     <Image src='/mp_gradient_rock.svg'   className="brand-img"  alt="Minority programmers"  />
+                                   </Grid.Column>
+                                   <Grid.Column>
+                                   <h2> Welcome to Minority Programmers Association </h2>
+                                  <button className="yellow" onClick={signIn}>Sign In</button>
+                                   </Grid.Column>
+                                 </Grid>                          
                                 </> 
                               )    
 
@@ -188,7 +208,7 @@ const Home= (  )=> {
                         <div className={styles.container}>
                           <Head>
                             <title>Minority Programmers Association</title>
-                            <link rel="icon" href="/favicon.ico" />
+                            <link rel="icon" href="/" />
                           </Head>
                           <main className={styles.main}>
                             {session?loggedInView():loggedOutView()}
